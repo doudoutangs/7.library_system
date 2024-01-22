@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.modules.bs.mapper.BookLossMapper">
+  <resultMap id="BaseResultMap" type="com.library.modules.bs.model.po.BookLoss">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="vip_id" jdbcType="INTEGER" property="vipId" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="lend_time" jdbcType="VARCHAR" property="lendTime" />
+    <result column="loss_reason" jdbcType="VARCHAR" property="lossReason" />
+    <result column="loss_degree" jdbcType="INTEGER" property="lossDegree" />
+    <result column="compensate_amount" jdbcType="VARCHAR" property="compensateAmount" />
+    <result column="loss_operate_id" jdbcType="INTEGER" property="lossOperateId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+</mapper>

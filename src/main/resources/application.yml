@@ -1,0 +1,75 @@
+server:
+  port: 8806
+
+spring:
+  application:
+    name: library-system
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/sp_library?useUnicode=true&characterEncoding=utf8&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&serverTimezone=UTC&serverTimezone=Asia/Shanghai
+    username: root
+    password: mysql
+    druid:
+      # 初始连接数
+      initialSize: 5
+      # 最小连接池数量
+      minIdle: 10
+      # 最大连接池数量
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+      # 配置检测连接是否有效
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+  freemarker:
+    cache: false
+    charset: UTF-8
+    content-type: text/html; charset=utf-8
+    request-context-attribute: request
+    suffix: .ftl
+    template-loader-path: classpath:/templates
+  mvc:
+    static-path-pattern: /static/**
+  servlet:
+    multipart:
+      max-file-size: 1024000
+      max-request-size: 1024000
+  thymeleaf:
+    cache: false
+
+logging:
+  file:
+    path: ./logs
+  level:
+    com:
+      library:
+        modules: info
+    root: info
+
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.library.modules.*.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+system:
+  user:
+    default:
+      password: 123456
+
+fileTemplate:
+  path: C:\\
+
+# 最大借书数量
+borrow:
+  maxCount : 6
+  maxDay : 31
+  damagesDay : 0.2

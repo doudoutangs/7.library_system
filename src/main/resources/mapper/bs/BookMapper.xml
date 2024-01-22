@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.library.modules.bs.mapper.BookMapper">
+    <resultMap id="BaseResultMap" type="com.library.modules.bs.model.po.Book">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="book_no" property="bookNo" jdbcType="VARCHAR"/>
+        <result column="author" property="author" jdbcType="VARCHAR"/>
+        <result column="release_date" property="releaseDate" jdbcType="VARCHAR"/>
+        <result column="press" property="press" jdbcType="VARCHAR"/>
+        <result column="press_name" property="pressName" jdbcType="VARCHAR"/>
+        <result column="category" property="category" jdbcType="VARCHAR"/>
+        <result column="category_name" property="categoryName" jdbcType="VARCHAR"/>
+        <result column="position" property="position" jdbcType="VARCHAR"/>
+        <result column="position_name" property="positionName" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DOUBLE"/>
+        <result column="total" property="total" jdbcType="INTEGER"/>
+        <result column="introduction" property="introduction" jdbcType="VARCHAR"/>
+        <result column="state" property="state" jdbcType="VARCHAR"/>
+        <result column="up_date" property="upDate" jdbcType="TIMESTAMP"/>
+        <result column="down_date" property="downDate" jdbcType="TIMESTAMP"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <delete id="batchDelete" parameterType="java.util.List">
+        delete from b_book where id in
+        <foreach collection="list" item="arr" open="(" separator="," close=")">
+            #{arr}
+        </foreach>
+    </delete>
+
+    <select id="getByIdList" resultMap="BaseResultMap">
+        select * from b_book where id in
+        <foreach collection="list" item="arr" open="(" separator="," close=")">
+            #{arr}
+        </foreach>
+    </select>
+    <update id="batchUpdate" parameterType="java.util.List">
+        <foreach collection="list" item="book" separator=";">
+            update b_book
+            set total =#{book.total}
+            where id =#{book.id}
+        </foreach>
+    </update>
+    <select id="query" resultMap="BaseResultMap">
+        SELECT
+                book.*,
+                press.dict_name as press_name,
+                category.dict_name as category_name,
+                address.dict_name as position_name
+        FROM
+            (
+            SELECT *
+            FROM b_book
+            <where>
+                <if test="state!=null">
+                    and state = #{state}
+                </if>
+                <if test="name!=null and name!=''">
+                    and name like CONCAT('%',#{name},'%')
+                </if>
+
+                <if test="bookNo!=null and bookNo!=''">
+                    and book_no like CONCAT('%',#{bookNo},'%')
+                </if>
+                <if test="bookNos!=null and bookNos!=''">
+                    and book_no in
+                    <foreach collection="bookNoList" item="bookNo" index="index" separator="," open="(" close=")">
+                        #{bookNo}
+                    </foreach>
+                </if>
+                <if test="nameOrAuthor!=null and nameOrAuthor!=''">
+                    AND (
+                        name like CONCAT('%',#{nameOrAuthor},'%')
+                        OR
+                        book_no like CONCAT('%',#{nameOrAuthor},'%')
+                        OR
+                        author like CONCAT('%',#{nameOrAuthor},'%')
+                    )
+                </if>
+            </where>
+        ) as book
+        LEFT JOIN (
+                    select
+                        dict_value,
+                        dict_name
+                    from sys_dict
+                    where dict_level = 'press'
+                  ) as press
+            ON press.dict_value = book.press
+        LEFT JOIN (
+            select
+                dict_value,
+                dict_name
+            from sys_dict
+            where dict_level = 'book_category'
+        ) as category
+            ON category.dict_value = book.category
+        LEFT JOIN (
+            select
+            dict_value,
+            dict_name
+            from sys_dict
+            where dict_level = 'book_address'
+        ) as address
+            ON address.dict_value = book.position
+        ORDER BY book.create_time DESC
+    </select>
+</mapper>

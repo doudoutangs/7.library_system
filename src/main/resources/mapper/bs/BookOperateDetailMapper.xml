@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.library.modules.bs.mapper.BookOperateDetailMapper">
+    <resultMap id="BaseResultMap" type="com.library.modules.bs.model.po.BookOperateDetail">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="operate_no" property="operateNo" jdbcType="INTEGER"/>
+        <result column="book_id" property="bookId" jdbcType="INTEGER"/>
+        <result column="book_name" property="bookName" jdbcType="INTEGER"/>
+        <result column="vip_id" property="vipId" jdbcType="INTEGER" />
+        <result column="vip_name" property="vipName" jdbcType="INTEGER" />
+        <result column="operate_id" property="operateId" jdbcType="INTEGER" />
+        <result column="operate_name" property="operateName" jdbcType="INTEGER" />
+        <result column="operate_type" property="operateType" jdbcType="INTEGER"/>
+        <result column="operate_year" property="operateYear" jdbcType="INTEGER"/>
+        <result column="operate_month" property="operateMonth" jdbcType="INTEGER"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="getByOperateNo" resultMap="BaseResultMap">
+        SELECT bod.*,
+               b.name as book_name,
+               u1.real_name AS vip_name,
+               u2.real_name AS operate_name
+        FROM b_book_operate_detail AS bod
+        LEFT JOIN b_book AS b
+             ON b.id = bod.book_id
+        LEFT JOIN sys_user AS u1
+             ON u1.id = bod.vip_id
+        LEFT JOIN sys_user AS u2
+             ON u2.id = bod.operate_id
+        <where>
+            bod.operate_no = #{operateNo}
+        </where>
+    </select>
+    <select id="getByBookIdList" resultMap="BaseResultMap">
+        SELECT *
+        FROM b_book_operate_detail
+        WHERE book_id IN
+            <foreach collection="bookIdList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+    </select>
+</mapper>

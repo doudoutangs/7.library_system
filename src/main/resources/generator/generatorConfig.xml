@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--本地数据库驱动jar -->
+    <classPathEntry
+            location="D:\work_soft\source\mvn_repository\mysql\mysql-connector-java\8.0.28\mysql-connector-java-8.0.28.jar" />
+    <context id="Mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+        <!-- 整合 lombok 插件 -->
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="com.library.core.mapper.MyMapper"/>
+        </plugin>
+
+        <!-- jdbc链接信息 -->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/sp_library"
+                        userId="root"
+                        password="mysql">
+        </jdbcConnection>
+
+        <javaModelGenerator targetPackage="com.library.modules.bs.model" targetProject="src/main/java"/>
+
+        <sqlMapGenerator targetPackage="mapper/bs" targetProject="src/main/resources"/>
+
+        <javaClientGenerator targetPackage="com.library.modules.bs.mapper" targetProject="src/main/java"
+                             type="XMLMAPPER"/>
+
+        <!--        <table tableName="b_book_warn" enableDeleteByExample="true"-->
+        <!--               enableSelectByExample="true" selectByExampleQueryId="true">-->
+        <!--            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--            <domainObjectRenamingRule searchString="^B" replaceString="" />-->
+        <!--        </table>-->
+        <table tableName="b_book_loss">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+            <domainObjectRenamingRule searchString="^B" replaceString="" />
+        </table>
+        <table tableName="b_user_account_record">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+            <domainObjectRenamingRule searchString="^B" replaceString="" />
+        </table>
+    </context>
+    <!--<properties resource="application.properties"/>-->
+
+
+</generatorConfiguration>

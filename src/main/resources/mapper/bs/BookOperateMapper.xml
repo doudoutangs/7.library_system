@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.library.modules.bs.mapper.BookOperateMapper">
+    <resultMap id="BaseResultMap" type="com.library.modules.bs.model.po.BookOperate">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="vip_id" property="vipId" jdbcType="INTEGER" />
+        <result column="book_name" property="bookName" jdbcType="VARCHAR" />
+        <result column="vip_name" property="vipName" jdbcType="VARCHAR" />
+        <result column="operate_id" property="operateId" jdbcType="INTEGER" />
+        <result column="operate_name" property="operateName" jdbcType="VARCHAR" />
+        <result column="operate_type" property="operateType" jdbcType="INTEGER" />
+        <result column="operate_count" property="operateCount" jdbcType="INTEGER" />
+        <result column="operate_year" property="operateYear" jdbcType="INTEGER" />
+        <result column="operate_month" property="operateMonth" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+    <select id="query" resultMap="BaseResultMap" >
+        SELECT
+            bo.*,
+            u1.real_name as vip_name,
+            u2.real_name as operate_name
+        FROM b_book_operate as bo
+        LEFT JOIN sys_user as u1
+            ON u1.id = bo.vip_id
+        LEFT JOIN sys_user as u2
+            ON u2.id = bo.operate_id
+        <where>
+            <if test="operateType!=null">
+                AND bo.operate_type = #{operateType}
+            </if>
+            <if test="vipId!=null and vipId!=''">
+                AND bo.vip_id = #{vipId}
+            </if>
+            <if test="operateId!=null and operateId!=''">
+                AND bo.operate_id = #{operateId}
+            </if>
+            <if test="operateYear!=null and operateYear!=''">
+                AND bo.operate_year = #{operateYear}
+            </if>
+            <if test="operateMonth!=null and operateMonth!=''">
+                AND bo.operate_month = #{operateMonth}
+            </if>
+
+        </where>
+        order by bo.create_time DESC
+    </select>
+</mapper>

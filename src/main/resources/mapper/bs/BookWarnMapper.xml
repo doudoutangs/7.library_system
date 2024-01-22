@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.modules.bs.mapper.BookWarnMapper">
+  <resultMap id="BaseResultMap" type="com.library.modules.bs.model.BookWarnVO">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="book_operate_no" jdbcType="INTEGER" property="bookOperateNo" />
+    <result column="vip_id" jdbcType="INTEGER" property="vipId" />
+    <result column="vip_phone" jdbcType="VARCHAR" property="vipPhone" />
+    <result column="vip_name" jdbcType="VARCHAR" property="vipName" />
+    <result column="book_id" jdbcType="INTEGER" property="bookId" />
+    <result column="book_name" jdbcType="VARCHAR" property="bookName" />
+    <result column="lend_time" jdbcType="VARCHAR" property="lendTime" />
+    <result column="revert_time" jdbcType="VARCHAR" property="revertTime" />
+    <result column="revert_time2" jdbcType="VARCHAR" property="revertTime2" />
+    <result column="real_revert_time" jdbcType="VARCHAR" property="realRevertTime" />
+    <result column="over_day" jdbcType="INTEGER" property="overDay" />
+    <result column="damages_amount" jdbcType="VARCHAR" property="damagesAmount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="lend_operate_id" jdbcType="INTEGER" property="lendOperateId" />
+    <result column="lend_operate_name" jdbcType="VARCHAR" property="lendOperateName" />
+    <result column="revert_operate_id" jdbcType="INTEGER" property="revertOperateId" />
+    <result column="revert_operate_name" jdbcType="VARCHAR" property="revertOperateName" />
+    <result column="extend_operate_id" jdbcType="INTEGER" property="extendOperateId" />
+    <result column="extend_operate_name" jdbcType="VARCHAR" property="extendOperateName" />
+    <result column="loss_operate_id" jdbcType="INTEGER" property="lossOperateId" />
+    <result column="loss_operate_name" jdbcType="VARCHAR" property="lossOperateName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+    <select id="queryByBookWarnIdList" resultMap="BaseResultMap">
+        SELECT * FROM b_book_warn
+        <where>
+            <if test="bookWarnIdList!=null">
+                AND id in
+                <foreach collection="bookWarnIdList" item="arr" open="(" separator="," close=")">
+                    #{arr}
+                </foreach>
+            </if>
+
+        </where>
+    </select>
+  <select id="queryPage" resultMap="BaseResultMap">
+    SELECT
+      w.*,
+      u.real_name as vip_name,
+      u.phone as vip_phone,
+      b.name as book_name,
+      lend.real_name   AS lend_operate_name,
+      revert.real_name AS revert_operate_name,
+      extend.real_name AS extend_operate_name,
+      loss.real_name   AS loss_operate_name
+    FROM (
+            SELECT * FROM b_book_warn
+               <where>
+                  <if test="vipId!=null and vipId!=''">
+                         AND vip_id =#{vipId}
+                  </if>
+                  <if test="status!=null">
+                       AND status =#{status}
+                  </if>
+                   <if test="vipIdList!=null">
+                       AND vip_id in
+                       <foreach collection="vipIdList" item="arr" open="(" separator="," close=")">
+                           #{arr}
+                       </foreach>
+                    </if>
+
+               </where>
+          )AS w
+        LEFT JOIN sys_user AS u
+            ON  w.vip_id = u.id
+        LEFT JOIN b_book AS b
+            ON  w.book_id = b.id
+        LEFT JOIN  sys_user AS lend
+           ON  w.lend_operate_id = lend.id
+        LEFT JOIN  sys_user AS revert
+           ON  w.revert_operate_id = revert.id
+        LEFT JOIN  sys_user AS extend
+           ON  w.extend_operate_id = extend.id
+        LEFT JOIN  sys_user AS loss
+           ON  w.loss_operate_id = loss.id
+        ORDER BY w.create_time DESC
+  </select>
+    <select id="getById" resultMap="BaseResultMap">
+        SELECT
+        w.*,
+        u.real_name as vip_name,
+        u.phone as vip_phone,
+        b.name as book_name,
+        lend.real_name   AS lend_operate_name,
+        revert.real_name AS revert_operate_name,
+        extend.real_name AS extend_operate_name,
+        loss.real_name   AS loss_operate_name
+        FROM (
+        SELECT * FROM b_book_warn
+        <where>
+            id =#{id}
+        </where>
+        )AS w
+        LEFT JOIN sys_user AS u
+        ON  w.vip_id = u.id
+        LEFT JOIN b_book AS b
+        ON  w.book_id = b.id
+        LEFT JOIN  sys_user AS lend
+        ON  w.lend_operate_id = lend.id
+        LEFT JOIN  sys_user AS revert
+        ON  w.revert_operate_id = revert.id
+        LEFT JOIN  sys_user AS extend
+        ON  w.extend_operate_id = extend.id
+        LEFT JOIN  sys_user AS loss
+        ON  w.loss_operate_id = loss.id
+    </select>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.modules.bs.mapper.UserAccountRecordMapper">
+  <resultMap id="BaseResultMap" type="com.library.modules.bs.model.UserAccountRecordVO">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="vip_id" jdbcType="INTEGER" property="vipId" />
+    <result column="vip_name" jdbcType="VARCHAR" property="vipName" />
+    <result column="operate_type" jdbcType="INTEGER" property="operateType" />
+    <result column="amount" jdbcType="DOUBLE" property="amount" />
+    <result column="change_reason" jdbcType="VARCHAR" property="changeReason" />
+    <result column="operate_id" jdbcType="INTEGER" property="operateId" />
+    <result column="operate_name" jdbcType="VARCHAR" property="operateName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <select id="queryPage" resultMap="BaseResultMap">
+        SELECT
+            account.*,
+            u.real_name as vip_name,
+            operate.real_name as operate_name
+
+        FROM (
+               SELECT *
+               FROM b_user_account_record
+                b_user_account_record
+               <where>
+                   <if test="vipId!=null and vipId!=''">
+                       vip_id =#{vipId}
+                   </if>
+                   <if test="operateType!=null and operateType!=''">
+                       AND operate_type =#{operateType}
+                   </if>
+               </where>
+            ) AS account
+        LEFT JOIN sys_user AS u
+           ON  account.vip_id = u.id
+          LEFT JOIN sys_user AS operate
+          ON  account.operate_id = operate.id
+        ORDER BY account.create_time DESC
+  </select>
+</mapper>
